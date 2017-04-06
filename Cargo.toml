@@ -1,0 +1,10 @@
+[package]
+name = "qgsrepo"
+version = "0.1.0"
+authors = ["Petr Tsymbarovich <petr@tsymbarovich.ru>"]
+
+[dependencies]
+argparse = "*"
+zip = { version = "0.2", default-features = false }
+rust-ini = "0.10.0"
+xml-rs = "0.4"
