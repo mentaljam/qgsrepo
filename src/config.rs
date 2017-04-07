@@ -4,29 +4,32 @@ use self::argparse::{
     ArgumentParser,
     Store,
     StoreTrue,
+    StoreFalse,
     Print
 };
 
 
 #[derive(Debug)]
 pub struct Config {
-    pub force:    bool,
-    pub strict:   bool,
-    pub reporoot: String,
-    pub repourl:  String,
-    pub outname:  String,
-    pub iconsdir: String
+    pub force:     bool,
+    pub strict:    bool,
+    pub withicons: bool,
+    pub reporoot:  String,
+    pub repourl:   String,
+    pub outname:   String,
+    pub iconsdir:  String
 }
 
 impl Config {
     pub fn new() -> Config {
         Config {
-            force:    false,
-            strict:   false,
-            reporoot: String::new(),
-            repourl:  String::new(),
-            outname:  String::from("plugins.xml"),
-            iconsdir: String::from("icons")
+            force:     false,
+            strict:    false,
+            withicons: true,
+            reporoot:  String::new(),
+            repourl:   String::new(),
+            outname:   String::from("plugins.xml"),
+            iconsdir:  String::from("icons")
         }
     }
 
@@ -44,8 +47,11 @@ impl Config {
         ap.refer(&mut self.outname)
             .add_option(&["-o", "--output"], Store,
                         "an output file name, default is \"plugins.xml\" in a repository root");
+        ap.refer(&mut self.withicons)
+            .add_option(&["--skip_icons"], StoreFalse,
+                        "do not extract icons");
         ap.refer(&mut self.iconsdir)
-            .add_option(&["-i", "--icons_dir"], Store,
+            .add_option(&["--icons_dir"], Store,
                         "a root subdirectory for icons, default is \"icons\"");
         ap.refer(&mut self.strict)
             .add_option(&["-s", "--strict"], StoreTrue,
