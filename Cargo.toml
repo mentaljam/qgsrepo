@@ -6,6 +6,10 @@ description = "QGIS repository generator"
 license = "zlib"
 build = "build.rs"
 
+[profile.release]
+lto = true
+panic = 'abort'
+
 [dependencies]
 argparse = "*"
 zip = { version = "0.2", default-features = false }
