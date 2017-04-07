@@ -2,9 +2,18 @@
 name = "qgsrepo"
 version = "0.1.0"
 authors = ["Petr Tsymbarovich <petr@tsymbarovich.ru>"]
+description = "QGIS repository generator"
+license = "zlib"
+build = "build.rs"
 
 [dependencies]
 argparse = "*"
 zip = { version = "0.2", default-features = false }
 rust-ini = "0.10.0"
 xml-rs = "0.4"
+
+[target.'cfg(all(target_os="windows", profile="release"))'.build-dependencies]
+winres = "*"
+
+[package.metadata.winres]
+LegalCopyright = "Petr Tsymbarovich"
