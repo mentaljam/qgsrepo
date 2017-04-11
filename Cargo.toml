@@ -3,7 +3,10 @@ name = "qgsrepo"
 version = "0.1.0"
 authors = ["Petr Tsymbarovich <petr@tsymbarovich.ru>"]
 description = "QGIS repository generator"
+repository = "https://github.com/mentaljam/qgsrepo"
+readme = "README.md"
 license = "zlib"
+keywords = ["qgis", "repository"]
 build = "build.rs"
 
 [profile.release]
