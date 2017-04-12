@@ -19,7 +19,7 @@ zip = { version = "0.2", default-features = false }
 rust-ini = "0.10.0"
 xml-rs = "0.4"
 
-[target.'cfg(all(target_os="windows", profile="release"))'.build-dependencies]
+[target.'cfg(target_os="windows")'.build-dependencies]
 winres = "*"
 
 [package.metadata.winres]
