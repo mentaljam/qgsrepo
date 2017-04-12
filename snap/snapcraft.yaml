@@ -1,0 +1,18 @@
+name: qgsrepo
+version: '0.1.1'
+summary:  A simple QGIS repository generator written in Rust
+description: |
+  A single binary that allows to generate a QGIS repository index XML file
+  for a plugins directory by extracting metadata from plugins archives.
+grade: stable
+confinement: classic
+
+apps:
+  qgsrepo:
+    command: qgsrepo
+
+parts:
+  qgsrepo:
+    plugin: rust
+    rust-channel: stable
+    source: https://github.com/mentaljam/qgsrepo
