@@ -55,8 +55,10 @@ macro_rules! write_file {
 macro_rules! write_icon {
     ($writer:ident, $cfg:ident, $icon_tag_name:ident, $icon_name:ident) => {
         let icon_tag = writer::XmlEvent::start_element($icon_tag_name);
-        let icon_path = PathBuf::from(&$cfg.iconsdir).join(&$icon_name);
-        let icon_text = writer::XmlEvent::characters(icon_path.to_str().unwrap());
+        let mut icon_path = $cfg.iconsdir.clone();
+        icon_path.push('/');
+        icon_path.push_str($icon_name.to_str().unwrap());
+        let icon_text = writer::XmlEvent::characters(icon_path.as_str());
         $writer.write(icon_tag).unwrap();
         $writer.write(icon_text).unwrap();
         $writer.write(writer::XmlEvent::end_element()).unwrap();
@@ -234,7 +236,10 @@ fn main() {
             let icon_tag_name = metakey(&MetaEntries::Icon);
             let zipicon = match general.get(icon_tag_name) {
                 Some(zipicon) => zipicon,
-                None => continue
+                None => {
+                    xmlwriter.write(writer::XmlEvent::end_element()).unwrap();
+                    continue
+                }
             };
             let zipicon_path = PathBuf::from(format!("{}/{}", plugin_dir, zipicon));
             let ext = zipicon_path.extension().unwrap();
@@ -247,6 +252,7 @@ fn main() {
             write_icon!(xmlwriter, cfg, icon_tag_name, icon_name);
             let icon_path = iconsdir.join(&icon_name);
             if icon_path.exists() {
+                xmlwriter.write(writer::XmlEvent::end_element()).unwrap();
                 continue
             }
             match zipreader.by_name(zipicon_path.to_str().unwrap()) {
