@@ -33,21 +33,24 @@ macro_rules! exit_with_code {
 
 
 macro_rules! write_url {
-    ($writer:ident, $cfg:ident) => {
+    ($writer:ident, $cfg:ident, $zip_name:ident) => {
         let url_tag = writer::XmlEvent::start_element(qgsmeta::xmlkey(&MetaEntries::DownloadUrl));
-        let url = writer::XmlEvent::characters($cfg.repourl.as_str());
+        let mut url = $cfg.repourl.clone();
+        url.push('/');
+        url.push_str($zip_name.to_str().unwrap());
+        let url_text = writer::XmlEvent::characters(url.as_str());
         $writer.write(url_tag).unwrap();
-        $writer.write(url).unwrap();
+        $writer.write(url_text).unwrap();
         $writer.write(writer::XmlEvent::end_element()).unwrap();
     }
 }
 
 macro_rules! write_file {
-    ($writer:ident, $zip_name:ident) => {
+    ($writer:ident, $file_name:ident) => {
         let file_tag = writer::XmlEvent::start_element(qgsmeta::xmlkey(&MetaEntries::FileName));
-        let zip_name = writer::XmlEvent::characters($zip_name.to_str().unwrap());
+        let file_name = writer::XmlEvent::characters($file_name.as_str());
         $writer.write(file_tag).unwrap();
-        $writer.write(zip_name).unwrap();
+        $writer.write(file_name).unwrap();
         $writer.write(writer::XmlEvent::end_element()).unwrap();
     }
 }
@@ -227,8 +230,8 @@ fn main() {
             }
         }
 
-        write_url!(xmlwriter, cfg);
-        write_file!(xmlwriter, zipname);
+        write_url!(xmlwriter, cfg, zipname);
+        write_file!(xmlwriter, plugin_dir);
         write_entries!(xmlwriter, general, text_entries, writer::XmlEvent::characters);
         write_entries!(xmlwriter, general, cdata_entries, writer::XmlEvent::cdata);
 
