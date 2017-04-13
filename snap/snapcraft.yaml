@@ -15,4 +15,4 @@ parts:
   qgsrepo:
     plugin: rust
     rust-channel: stable
-    source: https://github.com/mentaljam/qgsrepo
+    source: https://github.com/mentaljam/qgsrepo.git
