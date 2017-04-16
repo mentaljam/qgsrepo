@@ -48,10 +48,10 @@ impl Config {
             .add_option(&["-o", "--output"], Store,
                         "an output file name, default is \"plugins.xml\" in a repository root");
         ap.refer(&mut self.withicons)
-            .add_option(&["--skip_icons"], StoreFalse,
+            .add_option(&["--no-icons"], StoreFalse,
                         "do not extract icons");
         ap.refer(&mut self.iconsdir)
-            .add_option(&["--icons_dir"], Store,
+            .add_option(&["--icons-dir"], Store,
                         "a root subdirectory for icons, default is \"icons\"");
         ap.refer(&mut self.strict)
             .add_option(&["-s", "--strict"], StoreTrue,
