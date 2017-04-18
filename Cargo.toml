@@ -1,6 +1,6 @@
 [package]
 name = "qgsrepo"
-version = "0.1.1"
+version = "0.1.2"
 authors = ["Petr Tsymbarovich <petr@tsymbarovich.ru>"]
 description = "QGIS repository generator"
 repository = "https://github.com/mentaljam/qgsrepo"
@@ -21,6 +21,7 @@ xml-rs = "0.4"
 
 [target.'cfg(target_os="windows")'.build-dependencies]
 winres = "*"
+strfmt = "0.1.5"
 
 [package.metadata.winres]
 LegalCopyright = "Petr Tsymbarovich"

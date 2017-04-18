@@ -1,0 +1,18 @@
+@echo off
+set arch={arch}
+set win_arch={win_arch}
+set out_dir={out_dir}
+set target_dir={target_dir}
+set version={version}
+set wxs_files={wxs_files}
+set cultures={cultures}
+set wixobj=
+
+for %%x in (%wxs_files%) do (
+    candle -nologo -arch %arch% -out %out_dir%\%%x.wixobj %out_dir%\%%x.wxs
+    call set "wixobj=%out_dir%\%%x.wixobj %%wixobj%%"
+)
+
+for %%l in (%cultures%) do (
+    light -nologo -out %target_dir%\qgsrepo_%version%_%win_arch%_%%l.msi -ext "WixUIExtension" -cultures:%%l -loc %out_dir%\%%l.wxl  %wixobj%
+)

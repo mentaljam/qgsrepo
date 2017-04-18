@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- https://helgeklein.com/blog/2014/09/real-world-example-wix-msi-application-installer/ -->
+
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+
+  <!-- Predefined variables -->
+  <?define ApplicationName="QgsRepo"?>
+  <?define UpgradeCode="66DECDD6-6B60-44CE-868A-75E3860D315A"?>
+  <?define BinaryGuid="43570DE0-B87D-4B75-9936-1FDF78BDD14D"?>
+  <?define PathSystemVarGuid="EFAF9414-BC97-4E6A-A7CE-F71B6A549085"?>
+  <?define PathUserVarGuid="CE253A12-8EC0-4D3F-87DC-4249CC6F9383"?>
+  <?define InfoURL="https://github.com/mentaljam/qgsrepo"?>
+  <?define qgsrepoBinPath="../../../../qgsrepo.exe"?>
+
+  <!-- Resolved variables -->
+  <?define VersionNumber="!(bind.FileVersion.qgsrepoBin)"?>
+  <?if $(sys.BUILDARCH) = x86?>
+    <?define Win64="no"?>
+  <?elseif $(sys.BUILDARCH) = x64?>
+    <?define Win64="yes"?>
+  <?else?>
+    <?error Unknown architecture $(sys.BUILDARCH)?>
+  <?endif?>
+ 
+  <Product Id="*"
+           Name="$(var.ApplicationName)"
+           Language="!(loc.Language)"
+           Version="$(var.VersionNumber)"
+           Manufacturer="!(loc.ManufacturerFullName)"
+           UpgradeCode="$(var.UpgradeCode)">
+
+    <Package Id="*"
+             InstallerVersion="400"
+             Compressed="yes"
+             InstallScope="perUser"
+             Description="!(loc.ProductDescription)"
+             Comments="!(loc.Comments) $(var.VersionNumber)"/>
+
+    <!-- Define install prefix -->
+    <Property Id="InstallPrefix" Hidden="yes"/>
+    <!-- Non privileged - install to local user application data folder -->
+    <SetProperty Id="InstallPrefix" Value="[LocalAppDataFolder]" Action="SetLocalAppDataFolderPrefix" Before="AppSearch">
+      <![CDATA[ NOT Privileged ]]>
+    </SetProperty>
+    <!-- Privileged - install to "Program Files" or "Program Files (x86)" based on architecture -->
+    <!-- x86 -->
+    <SetProperty Id="InstallPrefix" Value="[ProgramFilesFolder]" Action="SetProgramFilesFolderPrefix" Before="AppSearch">
+      <![CDATA[ NOT InstallPrefix AND NOT VersionNT64 ]]>
+    </SetProperty>
+    <!-- x64 -->
+    <SetProperty Id="InstallPrefix" Value="[ProgramFiles64Folder]" Action="SetProgramFiles64FolderPrefix" Before="AppSearch">
+      <![CDATA[ NOT InstallPrefix AND VersionNT64 ]]>
+    </SetProperty>
+    <!-- Exit on unsupported architectures -->
+    <Condition Message="!(loc.UnsupportedArch)">
+      <![CDATA[ InstallPrefix ]]>
+    </Condition>
+
+    <!-- Set some properties and variables -->
+    <WixVariable Id="WixUILicenseRtf" Value="license.rtf"/>
+    <Property Id="ARPHELPLINK" Value="$(var.InfoURL)"/>
+    <MajorUpgrade DowngradeErrorMessage="!(loc.NewerInstalled)"/>
+    <InstallExecuteSequence>
+      <Custom Action="SetARPINSTALLLOCATION" After="InstallValidate"></Custom>
+    </InstallExecuteSequence>
+    <CustomAction Id="SetARPINSTALLLOCATION" Property="ARPINSTALLLOCATION" Value="[INSTALLDIR]"/>
+
+    <!-- Save the command line value INSTALLDIR and restore it later in the sequence or it will be overwritten by the value saved to the registry during an upgrade -->
+    <CustomAction Id='SaveCmdLineValueINSTALLDIR' Property='CMDLINE_INSTALLDIR' Value='[INSTALLDIR]' Execute='firstSequence'/>
+    <CustomAction Id='SetFromCmdLineValueINSTALLDIR' Property='INSTALLDIR' Value='[CMDLINE_INSTALLDIR]' Execute='firstSequence'/>
+    <InstallUISequence>
+      <Custom Action='SaveCmdLineValueINSTALLDIR' Before='AppSearch'/>
+      <Custom Action='SetFromCmdLineValueINSTALLDIR' After='AppSearch'>
+        CMDLINE_INSTALLDIR
+      </Custom>
+    </InstallUISequence>
+    <InstallExecuteSequence>
+      <Custom Action='SaveCmdLineValueINSTALLDIR' Before='AppSearch'/>
+      <Custom Action='SetFromCmdLineValueINSTALLDIR' After='AppSearch'>
+        CMDLINE_INSTALLDIR
+      </Custom>
+    </InstallExecuteSequence>
+
+    <!-- Directory structure -->
+    <Media Id="1" Cabinet="media1.cab" EmbedCab="yes"/>
+
+    <Directory Id="TARGETDIR" Name="SourceDir">
+      <Directory Id="InstallPrefix">
+        <Directory Id="INSTALLDIR" Name="$(var.ApplicationName)">
+          <Component Id="qgsrepoBin_comp" Guid="$(var.BinaryGuid)" Win64="$(var.Win64)">
+            <File Source="$(var.qgsrepoBinPath)" Id="qgsrepoBin" KeyPath="yes"/>
+          </Component>
+          <Component Id="PathSystemVar_comp" Guid="$(var.PathSystemVarGuid)" KeyPath="yes">
+            <Environment Id="PathSystemVar"
+                         Name="PATH"
+                         Value="[INSTALLDIR]"
+                         Permanent="no"
+                         Part="last"
+                         Action="set"
+                         System="yes"/>
+          </Component>
+          <Component Id="PathUserVar_comp" Guid="$(var.PathUserVarGuid)" KeyPath="yes">
+            <Environment Id="PathUserVar"
+                         Name="PATH"
+                         Value="[INSTALLDIR]"
+                         Permanent="no"
+                         Part="last"
+                         Action="set"
+                         System="no"/>
+          </Component>
+        </Directory>
+      </Directory>
+    </Directory>
+
+    <Feature Id="qgsrepoBin_feat" Level="1">
+      <ComponentRef Id="qgsrepoBin_comp"/>
+    </Feature>
+    <!-- Add qgsrepo to the PATH system or user wide based on privileges -->
+    <Feature Id="PathSystemVar_feat">
+      <ComponentRef Id="PathSystemVar_comp"/>
+      <Condition Level="0"><![CDATA[ NOT Privileged ]]></Condition>
+    </Feature>
+    <Feature Id="PathUserVar_feat">
+      <ComponentRef Id="PathUserVar_comp"/>
+      <Condition Level="0"><![CDATA[ Privileged ]]></Condition>
+    </Feature>
+
+    <Property Id="WIXUI_INSTALLDIR" Value="INSTALLDIR"/>
+
+    <UIRef Id="WixUI_InstallDir" />
+
+  </Product>
+</Wix>

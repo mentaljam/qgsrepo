@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<WixLocalization Culture="en-us" Codepage="1252" xmlns="http://schemas.microsoft.com/wix/2006/localization">
+  <String Id="Language">1033</String>
+  <String Id="ManufacturerFullName">Petr Tsymbarovich</String>
+  <String Id="ProductDescription">QGIS repository generator</String>
+  <String Id="Comments">Installs QgsRepo</String>
+  <String Id="NewerInstalled">The same or a newer version of this product is already installed.</String>
+  <String Id="UnsupportedArch">The target OS architecture is not supported.</String>
+</WixLocalization>
