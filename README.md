@@ -1,6 +1,9 @@
 # qgsrepo
 A simple QGIS repository generator written in Rust.
 
+[![License](https://img.shields.io/badge/license-zlib-blue.svg)]()
+[![License](https://img.shields.io/github/release/mentaljam/qgsrepo.svg)]()
+
 A single binary that allows to generate a QGIS repository index XML file for a plugins directory by extracting metadata from plugins archives.
 
 ## Usage
