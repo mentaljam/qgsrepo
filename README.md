@@ -3,6 +3,7 @@ A simple QGIS repository generator written in Rust.
 
 [![License](https://img.shields.io/badge/license-zlib-blue.svg)]()
 [![License](https://img.shields.io/github/release/mentaljam/qgsrepo.svg)]()
+[![Snap Status](https://build.snapcraft.io/badge/mentaljam/qgsrepo.svg)](https://build.snapcraft.io/user/mentaljam/qgsrepo)
 
 A single binary that allows to generate a QGIS repository index XML file for a plugins directory by extracting metadata from plugins archives.
 
