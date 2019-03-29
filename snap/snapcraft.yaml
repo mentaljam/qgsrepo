@@ -20,6 +20,8 @@ parts:
   qgsrepo:
     plugin: nil
     source: .
+    build-packages:
+      - cargo
     override-build: |
       cargo build --release
       mkdir $SNAPCRAFT_PART_INSTALL/bin
