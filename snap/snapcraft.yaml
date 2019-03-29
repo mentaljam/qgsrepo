@@ -1,5 +1,5 @@
 name: qgsrepo
-version: '0.1.3'
+version: '0.1.4'
 summary: A simple QGIS repository generator written in Rust
 description: |
   A single binary that allows to generate a QGIS repository index XML file
