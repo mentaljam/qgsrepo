@@ -10,12 +10,18 @@ confinement: strict
 apps:
   qgsrepo:
     command: qgsrepo
+    completer: share/bash-completion/completions/qgsrepo
     plugs: [ home ]
 
 parts:
+  completer:
+    plugin: dump
+    source: snap/local
   qgsrepo:
-    plugin: rust
-    rust-channel: stable
-    source: https://github.com/mentaljam/qgsrepo.git
-    install: |
+    plugin: nil
+    source: .
+    override-build: |
+      cargo build --release
+      mkdir $SNAPCRAFT_PART_INSTALL/bin
+      cp target/release/qgsrepo $SNAPCRAFT_PART_INSTALL/bin/
       strip $SNAPCRAFT_PART_INSTALL/bin/qgsrepo

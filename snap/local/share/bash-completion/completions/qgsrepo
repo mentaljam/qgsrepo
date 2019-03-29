@@ -1,0 +1,15 @@
+# -*- shell-script -*-
+
+_complete_qgsrepo() {
+    local cur prev words cword
+    _init_completion || return
+
+    if [[ $cur == -* ]]; then
+        # COMPREPLY=($(compgen -W '$(_parse_help "$1")' -- "$cur"))
+        COMPREPLY=($(compgen -W "--help --output --no-icons --icons-dir --strict --force --version" -- "$cur"))
+    else
+        _filedir
+    fi
+}
+
+complete -F _complete_qgsrepo qgsrepo
