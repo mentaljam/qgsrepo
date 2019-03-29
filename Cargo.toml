@@ -1,6 +1,6 @@
 [package]
 name = "qgsrepo"
-version = "0.1.3"
+version = "0.1.4"
 authors = ["Petr Tsymbarovich <petr@tsymbarovich.ru>"]
 description = "QGIS repository generator"
 repository = "https://github.com/mentaljam/qgsrepo"
@@ -14,14 +14,14 @@ lto = true
 panic = 'abort'
 
 [dependencies]
-argparse = "*"
-zip = { version = "0.2", default-features = false }
-rust-ini = "0.10.0"
-xml-rs = "0.4"
+argparse = "^0.2"
+zip = { version = "^0.5", features = ["deflate"] }
+rust-ini = "^0.13"
+xml-rs = "^0.8"
 
 [target.'cfg(target_os="windows")'.build-dependencies]
 winres = "*"
-strfmt = "0.1.5"
+strfmt = "^0.1"
 
 [package.metadata.winres]
 LegalCopyright = "Petr Tsymbarovich"
